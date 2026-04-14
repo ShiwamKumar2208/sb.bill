@@ -35,7 +35,7 @@ function generate() {
 
   let html = `
     <div class="logo">
-      <img src="oldlogo.png">
+      <img src="./logo.png">
     </div>
 
     <div class="title">Shobha Boutique</div>
@@ -67,8 +67,9 @@ function generate() {
     </div>
 
     <div class="footer">
-      Thank you for your order! 😊<br><br>
-      Do visit again!
+        <p>Thank you for your order 😊</p>
+        <p>Do visit again ✨</p>
+        <p class="note">Please keep this bill for any future reference.</p>
     </div>
   `;
 
