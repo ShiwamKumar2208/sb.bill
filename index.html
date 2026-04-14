@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>SB Bill</title>
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#e91e63" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+<div class="app">
+
+  <!-- INPUT -->
+  <input id="name" placeholder="Customer name" />
+
+  <textarea id="input" placeholder="kurti 300
+blouse 200"></textarea>
+
+  <!-- BILL OUTPUT -->
+  <div id="bill"></div>
+
+  <!-- ACTIONS -->
+  <div class="actions">
+    <button id="downloadBtn">Download</button>
+    <button id="shareBtn">Share</button>
+  </div>
+
+</div>
+
+<!-- LIB -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<!-- APP -->
+<script src="app.js"></script>
+
+<!-- EVENTS + SW -->
+<script>
+  const nameInput = document.getElementById("name");
+  const textInput = document.getElementById("input");
+
+  nameInput.addEventListener("input", generate);
+  textInput.addEventListener("input", generate);
+
+  document.getElementById("downloadBtn").addEventListener("click", download);
+  document.getElementById("shareBtn").addEventListener("click", share);
+</script>
+
+</body>
+</html>

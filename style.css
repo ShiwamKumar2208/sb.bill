@@ -1,0 +1,142 @@
+/* GOOGLE FONTS */
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Inter:wght@400;500;600&display=swap');
+
+/* BASE */
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background: #111;
+  color: white;
+}
+
+.app {
+  max-width: 420px;
+  margin: auto;
+  padding: 12px;
+}
+
+/* INPUTS */
+input, textarea, button, #bill {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+input, textarea {
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  border: none;
+  font-size: 15px;
+}
+
+textarea {
+  height: 120px;
+  resize: none;
+}
+
+/* BUTTONS */
+button {
+  padding: 12px;
+  margin-top: 6px;
+  border-radius: 10px;
+  border: none;
+  background: #e91e63;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+/* ACTION BUTTONS */
+.actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.actions button {
+  flex: 1;
+}
+
+/* BILL CONTAINER */
+#bill {
+  background: #ffffff;
+  color: #222;
+  padding: 20px;
+  border-radius: 14px;
+  margin-top: 12px;
+}
+
+/* LOGO */
+.logo {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.logo img {
+  width: 60px;
+  opacity: 0.9;
+}
+
+/* TITLE (Cursive Pink) */
+.title {
+  text-align: center;
+  font-family: 'Pacifico', cursive;
+  color: #e91e63;
+  font-size: 28px;
+  margin-bottom: 4px;
+}
+
+/* SUBTITLE */
+.subtitle {
+  text-align: center;
+  color: #777;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+/* INFO ROWS */
+.row {
+  margin: 8px 0;
+  font-size: 15px;
+}
+
+.row b {
+  font-weight: 600;
+}
+
+/* DIVIDER */
+hr {
+  border: none;
+  border-top: 1px solid #eee;
+  margin: 12px 0;
+}
+
+/* ITEMS */
+.item {
+  display: flex;
+  justify-content: space-between;
+  margin: 6px 0;
+  font-size: 15px;
+}
+
+/* TOTAL */
+.total {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 600;
+  margin-top: 10px;
+  font-size: 16px;
+}
+
+/* FOOTER */
+.footer {
+  text-align: center;
+  margin-top: 20px;
+  color: #555;
+  font-size: 14px;
+}

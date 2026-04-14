@@ -1,0 +1,8 @@
+{
+  "name": "Shobha Boutique Bill",
+  "short_name": "SB Bill",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#111",
+  "theme_color": "#e91e63"
+}
