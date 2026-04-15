@@ -163,3 +163,69 @@ hr {
   font-size: 12px;
   color: #888;
 }
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 100;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+}
+
+.modal-content {
+  background: white;
+  color: black;
+  margin: 20% auto;
+  padding: 20px;
+  border-radius: 12px;
+  width: 80%;
+  max-width: 300px;
+  text-align: center;
+}
+
+.modal-content img {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+#closeQr {
+  float: right;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* HIDDEN EXPORT */
+#qrExport {
+  position: fixed;
+  left: -9999px;
+  top: 0;
+}
+
+/* EXPORT STYLE */
+.qr-box {
+  background: white;
+  padding: 20px;
+  width: 260px;
+  text-align: center;
+  border-radius: 12px;
+  font-family: sans-serif;
+}
+
+.qr-box img {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.qr-title {
+  font-weight: bold;
+  margin: 5px 0;
+}
+
+.qr-note {
+  font-size: 12px;
+  color: #555;
+  margin: 2px 0;
+}

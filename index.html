@@ -1,57 +1,108 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="icon" href="icons-pwa/icon-192.png">
-  <title>SB Bill</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="icons/icon-192.png" />
+    <title>SB Bill</title>
 
-  <!-- PWA -->
-  <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#e91e63" />
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#e91e63" />
 
-  <!-- Styles -->
-  <link rel="stylesheet" href="style.css" />
-</head>
+    <link rel="stylesheet" href="style.css" />
+  </head>
 
-<body>
+  <body>
+    <div class="app">
+      <input id="name" placeholder="Customer name" />
+      <input type="date" id="date" />
 
-<div class="app">
+      <textarea
+        id="input"
+        placeholder="kurti 300
+blouse 200"
+      ></textarea>
 
-  <!-- INPUT -->
-  <input id="name" placeholder="Customer name" />
+      <div id="bill"></div>
 
-  <textarea id="input" placeholder="kurti 300
-blouse 200"></textarea>
+      <div class="actions">
+        <button id="downloadBtn">Download Bill</button>
+        <button id="shareBtn">Share Bill</button>
+      </div>
 
-  <!-- BILL OUTPUT -->
-  <div id="bill"></div>
+      <div class="actions">
+        <button id="upiBtn">Show Payment QR</button>
+        <button id="shareUpi">Share UPI QR</button>
+      </div>
 
-  <!-- ACTIONS -->
-  <div class="actions">
-    <button id="downloadBtn">Download</button>
-    <button id="shareBtn">Share</button>
+      <div class="actions">
+        <button id="shareBoth">Share Bill + QR</button>
+      </div>
+
+      <!-- MODAL -->
+      <div id="qrModal" class="modal">
+        <div class="modal-content">
+          <span id="closeQr">&times;</span>
+
+          <div id="qrcode"></div>
+
+          <p class="qr-title">Scan to Pay</p>
+          <p class="qr-note">Shobha Boutique</p>
+          <p class="qr-note" id="qrAmount"></p>
+          <p class="qr-note"><br>+91 9153282101 <br> for payment</p>
+          <p class="qr-note"><br>+91 7903460836 <br> for customer service</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="qrExport">
+    <div class="qr-box">
+      <div id="qrExportCode"></div>
+      <p class="qr-note">Scan to Pay</p>
+      <p class="qr-note">Shobha Boutique</p>
+      <p class="qr-note" id="qrExportAmount"></p>
+      <p class="qr-note"><br>+91 9153282101 <br> for payment</p>
+      <p class="qr-note"><br>+91 7903460836 <br> for customer service</p>
+    </div>
   </div>
 
-</div>
+    <!-- LIBS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
-<!-- LIB -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- APP -->
+    <script src="app.js"></script>
 
-<!-- APP -->
-<script src="app.js"></script>
+    <script>
+      const nameInput = document.getElementById("name");
+      const textInput = document.getElementById("input");
 
-<!-- EVENTS + SW -->
-<script>
-  const nameInput = document.getElementById("name");
-  const textInput = document.getElementById("input");
+      nameInput.addEventListener("input", generate);
+      textInput.addEventListener("input", generate);
+      document.getElementById("date").addEventListener("input", generate);
 
-  nameInput.addEventListener("input", generate);
-  textInput.addEventListener("input", generate);
+      document.getElementById("downloadBtn").onclick = download;
+      document.getElementById("shareBtn").onclick = share;
+      document.getElementById("shareUpi").onclick = shareupi;
+      document.getElementById("shareBoth").onclick = shareBoth;
 
-  document.getElementById("downloadBtn").addEventListener("click", download);
-  document.getElementById("shareBtn").addEventListener("click", share);
-</script>
+      document.getElementById("upiBtn").onclick = () => {
+        generateUPIQR();
+        document.getElementById("qrModal").style.display = "block";
+      };
 
-</body>
+      document.getElementById("closeQr").onclick = () => {
+        document.getElementById("qrModal").style.display = "none";
+      };
+
+      window.onclick = (e) => {
+        const modal = document.getElementById("qrModal");
+        if (e.target === modal) modal.style.display = "none";
+      };
+
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("sw.js");
+      }
+    </script>
+  </body>
 </html>
