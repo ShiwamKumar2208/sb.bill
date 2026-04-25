@@ -229,3 +229,35 @@ hr {
   color: #555;
   margin: 2px 0;
 }
+
+.paid-status {
+  text-align: center;
+  font-weight: bold;
+  margin: 10px 0;
+  padding: 6px;
+  border-radius: 6px;
+}
+
+.paid {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.unpaid {
+  background: #ffebee;
+  color: #c62828;
+}
+
+.bill-container {
+  position: relative;
+}
+
+.paid-stamp {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-20deg);
+  width: 180px;
+  opacity: 0.2;
+  pointer-events: none;
+}
