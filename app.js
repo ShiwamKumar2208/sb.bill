@@ -4,10 +4,21 @@ window.share = share;
 window.shareupi = shareupi;
 window.shareBoth = shareBoth;
 
+window.isPaid = false;
+
 window.onload = () => {
   const dateInput = document.getElementById("date");
   const today = new Date().toISOString().split("T")[0];
   dateInput.value = today;
+  generate();
+};
+
+document.getElementById("markPaidBtn").onclick = () => {
+  window.isPaid = !window.isPaid;
+
+  document.getElementById("markPaidBtn").textContent =
+    window.isPaid ? "Mark as Unpaid" : "Mark as Paid";
+
   generate();
 };
 
@@ -41,18 +52,27 @@ function generate() {
 
   let total = 0;
 
+  // 🔥 PNG STAMP
+  let paidStamp = "";
+  if (window.isPaid) {
+    paidStamp = `<img src="paid.png" class="paid-stamp">`;
+  }
+
   let html = `
-    <div class="logo">
-      <img src="./logo.png">
-    </div>
+    <div class="bill-container">
+      ${paidStamp}
 
-    <div class="title">Shobha Boutique</div>
-    <div class="subtitle">Your personal tailoring service</div>
+      <div class="logo">
+        <img src="./logo.png">
+      </div>
 
-    <div class="row"><b>Name:</b> ${name || "-"}</div>
-    <div class="row"><b>Date:</b> ${formattedDate}</div>
+      <div class="title">Shobha Boutique</div>
+      <div class="subtitle">Your personal tailoring service</div>
 
-    <hr>
+      <div class="row"><b>Name:</b> ${name || "-"}</div>
+      <div class="row"><b>Date:</b> ${formattedDate}</div>
+
+      <hr>
   `;
 
   items.forEach((i) => {
@@ -67,19 +87,20 @@ function generate() {
   });
 
   html += `
-    <hr>
+      <hr>
 
-    <div class="total">
-      <span>Total</span>
-      <span>₹${total}</span>
-    </div>
+      <div class="total">
+        <span>Total</span>
+        <span>₹${total}</span>
+      </div>
 
-    <div class="footer">
-      <p>Thank you for choosing Shobha Boutique 😊</p>
-      <p>Do visit again ✨</p>
-      <p class="note">
-        Please keep this bill. For any issues, contact within 7 days.
-      </p>
+      <div class="footer">
+        <p>Thank you for choosing Shobha Boutique 😊</p>
+        <p>Do visit again ✨</p>
+        <p class="note">
+          Please keep this bill. For any issues, contact within 7 days.
+        </p>
+      </div>
     </div>
   `;
 
@@ -87,36 +108,36 @@ function generate() {
   window.currentTotal = total;
 }
 
+/* 🔥 UPI QR */
 function generateUPIQR() {
   const total = window.currentTotal || 0;
-
   if (!total) return false;
 
   const upiId = "shark.sk1154@oksbi";
   const name = "Shobha Boutique";
 
-  const upiLink = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(name)}&am=${total}&cu=INR`;
+  const upiLink = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(
+    name
+  )}&am=${total}&cu=INR`;
 
-  // 🔹 MODAL QR
   const qrContainer = document.getElementById("qrcode");
   qrContainer.innerHTML = "";
 
   new QRCode(qrContainer, {
     text: upiLink,
     width: 200,
-    height: 200
+    height: 200,
   });
 
   document.getElementById("qrAmount").textContent = `Amount: ₹${total}`;
 
-  // 🔹 EXPORT QR (IMPORTANT)
   const exportContainer = document.getElementById("qrExportCode");
   exportContainer.innerHTML = "";
 
   new QRCode(exportContainer, {
     text: upiLink,
     width: 200,
-    height: 200
+    height: 200,
   });
 
   document.getElementById("qrExportAmount").textContent = `Amount: ₹${total}`;
@@ -124,7 +145,7 @@ function generateUPIQR() {
   return true;
 }
 
-/* 🔥 DOWNLOAD BILL */
+/* 🔥 DOWNLOAD */
 async function download() {
   const bill = document.getElementById("bill");
 
@@ -139,7 +160,7 @@ async function download() {
   link.click();
 }
 
-/* 🔥 SHARE BILL (fixed reliability) */
+/* 🔥 SHARE BILL */
 async function share() {
   const bill = document.getElementById("bill");
 
@@ -148,52 +169,35 @@ async function share() {
     backgroundColor: "#ffffff",
   });
 
-  canvas.toBlob(async (blob) => {
-    const file = new File([blob], "sb-bill.png", {
-      type: "image/png",
-    });
+  const blob = await new Promise((resolve) => canvas.toBlob(resolve));
+  if (!blob) return;
 
-    try {
-      if (
-        navigator.share &&
-        navigator.canShare &&
-        navigator.canShare({ files: [file] })
-      ) {
-        await navigator.share({ files: [file] });
-      } else {
-        // fallback
-        const link = document.createElement("a");
-        link.download = "sb-bill.png";
-        link.href = canvas.toDataURL();
-        link.click();
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  });
+  const file = new File([blob], "sb-bill.png", { type: "image/png" });
+
+  if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+    await navigator.share({ files: [file] });
+  } else {
+    const link = document.createElement("a");
+    link.download = "sb-bill.png";
+    link.href = canvas.toDataURL();
+    link.click();
+  }
 }
 
+/* 🔥 SHARE QR */
 async function shareupi() {
   const ok = generateUPIQR();
-
-  if (!ok) {
-    alert("Add items first");
-    return;
-  }
+  if (!ok) return alert("Add items first");
 
   const qrBox = document.querySelector("#qrExport .qr-box");
 
   const canvas = await html2canvas(qrBox, {
     scale: 2,
-    backgroundColor: "#ffffff"
+    backgroundColor: "#ffffff",
   });
 
-  const blob = await new Promise(resolve => canvas.toBlob(resolve));
-
-  if (!blob) {
-    alert("Failed to generate QR image");
-    return;
-  }
+  const blob = await new Promise((resolve) => canvas.toBlob(resolve));
+  if (!blob) return;
 
   const file = new File([blob], "upi-qr.png", { type: "image/png" });
 
@@ -207,30 +211,29 @@ async function shareupi() {
   }
 }
 
+/* 🔥 SHARE BOTH */
 async function shareBoth() {
   const ok = generateUPIQR();
-
-  if (!ok) {
-    alert("Add items first");
-    return;
-  }
+  if (!ok) return alert("Add items first");
 
   const bill = document.getElementById("bill");
   const qrBox = document.querySelector("#qrExport .qr-box");
 
   const billCanvas = await html2canvas(bill, {
     scale: 2,
-    backgroundColor: "#ffffff"
+    backgroundColor: "#ffffff",
   });
 
   const qrCanvas = await html2canvas(qrBox, {
     scale: 2,
-    backgroundColor: "#ffffff"
+    backgroundColor: "#ffffff",
   });
+
+  const gap = 20;
 
   const finalCanvas = document.createElement("canvas");
   finalCanvas.width = Math.max(billCanvas.width, qrCanvas.width);
-  finalCanvas.height = billCanvas.height + qrCanvas.height;
+  finalCanvas.height = billCanvas.height + qrCanvas.height + gap;
 
   const ctx = finalCanvas.getContext("2d");
 
@@ -239,17 +242,16 @@ async function shareBoth() {
 
   const billX = (finalCanvas.width - billCanvas.width) / 2;
   ctx.drawImage(billCanvas, billX, 0);
+
   const qrX = (finalCanvas.width - qrCanvas.width) / 2;
-  ctx.drawImage(qrCanvas, qrX, billCanvas.height);
+  ctx.drawImage(qrCanvas, qrX, billCanvas.height + gap);
 
-  const blob = await new Promise(resolve => finalCanvas.toBlob(resolve));
+  const blob = await new Promise((resolve) => finalCanvas.toBlob(resolve));
+  if (!blob) return;
 
-  if (!blob) {
-    alert("Failed to generate image");
-    return;
-  }
-
-  const file = new File([blob], "bill-with-qr.png", { type: "image/png" });
+  const file = new File([blob], "bill-with-qr.png", {
+    type: "image/png",
+  });
 
   if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
     await navigator.share({ files: [file] });
