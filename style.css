@@ -281,8 +281,8 @@ hr {
   left: 50%;
   transform: translate(-50%, -50%) rotate(-20deg);
 
-  width: 40%;          /* 🔥 key change */
-  max-width: 180px;    /* limit for big screens */
+  width: 40%;         
+  max-width: 180px;  
   
   opacity: 0.25;
   pointer-events: none;
