@@ -36,8 +36,12 @@ blouse 200"
       </div>
 
       <div class="actions">
-        <button id="shareBoth">Share Bill + QR</button>
+        <button id="importBill">Import & Mark Paid</button>
         <button id="markPaidBtn">Mark Paid</button>
+      </div>
+      <div class="actions">
+        <button id="simpleQrBtn">Show Plain QR</button>
+        <button id="shareBoth">Share Bill + QR</button>
       </div>
 
       <!-- MODAL -->
@@ -50,22 +54,49 @@ blouse 200"
           <p class="qr-title">Scan to Pay</p>
           <p class="qr-note">Shobha Boutique</p>
           <p class="qr-note" id="qrAmount"></p>
-          <p class="qr-note"><br>+91 9153282101 <br> for payment</p>
-          <p class="qr-note"><br>+91 7903460836 <br> for customer service</p>
+          <p class="qr-note">
+            <br />+91 9153282101 <br />
+            for payment
+          </p>
+          <p class="qr-note">
+            <br />+91 7903460836 <br />
+            for customer service
+          </p>
         </div>
       </div>
     </div>
 
     <div id="qrExport">
-    <div class="qr-box">
-      <div id="qrExportCode"></div>
-      <p class="qr-note">Scan to Pay</p>
-      <p class="qr-note">Shobha Boutique</p>
-      <p class="qr-note" id="qrExportAmount"></p>
-      <p class="qr-note"><br>+91 9153282101 <br> for payment</p>
-      <p class="qr-note"><br>+91 7903460836 <br> for customer service</p>
+      <div class="qr-box">
+        <div id="qrExportCode"></div>
+        <p class="qr-note">Scan to Pay</p>
+        <p class="qr-note">Shobha Boutique</p>
+        <p class="qr-note" id="qrExportAmount"></p>
+        <p class="qr-note">
+          <br />+91 9153282101 <br />
+          for payment
+        </p>
+        <p class="qr-note">
+          <br />+91 7903460836 <br />
+          for customer service
+        </p>
+      </div>
+
+      <div id="importModal" class="modal">
+        <div class="modal-content">
+          <span id="closeImport">&times;</span>
+
+          <div id="importPreview" class="bill-container"></div>
+
+          <div class="actions">
+            <button id="downloadImport">Download</button>
+            <button id="shareImport">Share</button>
+          </div>
+        </div>
+      </div>
+
+      <input type="file" id="importFile" accept="image/*" hidden />
     </div>
-  </div>
 
     <!-- LIBS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
