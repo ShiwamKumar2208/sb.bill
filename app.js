@@ -193,8 +193,6 @@ document.getElementById("simpleQrBtn").onclick = () => {
   document.getElementById("qrModal").style.display = "block";
 };
 
-document.getElementById("qrAmount").textContent = "Enter amount after scanning";
-
 function generateSimpleQR() {
   const upiId = "shark.sk1154@oksbi";
   const name = "Shobha Boutique";
