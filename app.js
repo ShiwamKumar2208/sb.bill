@@ -13,15 +13,98 @@ window.onload = () => {
   generate();
 };
 
+/* 🔘 MARK PAID TOGGLE */
 document.getElementById("markPaidBtn").onclick = () => {
   window.isPaid = !window.isPaid;
 
   document.getElementById("markPaidBtn").textContent =
     window.isPaid ? "Mark as Unpaid" : "Mark as Paid";
 
-  generate();
+  // 🔥 apply to current bill
+  const container = document.querySelector(".bill-container");
+  if (container) applyPaidStampTo(container);
+
+  // 🔥 also apply to imported preview (if open)
+  const preview = document.getElementById("importPreview");
+  if (preview && preview.children.length) {
+    applyPaidStampTo(preview);
+  }
 };
 
+
+document.getElementById("downloadImport").onclick = async () => {
+  const el = document.getElementById("importPreview");
+
+  const canvas = await html2canvas(el, {
+    scale: 2,
+    backgroundColor: "#ffffff"
+  });
+
+  const link = document.createElement("a");
+  link.download = "paid-bill.png";
+  link.href = canvas.toDataURL();
+  link.click();
+};
+
+document.getElementById("shareImport").onclick = async () => {
+  const el = document.getElementById("importPreview");
+
+  const canvas = await html2canvas(el, {
+    scale: 2,
+    backgroundColor: "#ffffff"
+  });
+
+  const blob = await new Promise(r => canvas.toBlob(r));
+  if (!blob) return;
+
+  const file = new File([blob], "paid-bill.png", {
+    type: "image/png"
+  });
+
+  if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+    await navigator.share({ files: [file] });
+  } else {
+    const link = document.createElement("a");
+    link.download = "paid-bill.png";
+    link.href = canvas.toDataURL();
+    link.click();
+  }
+};
+
+document.getElementById("closeImport").onclick = () => {
+  document.getElementById("importModal").style.display = "none";
+};
+
+
+/* 📥 IMPORT BILL IMAGE */
+document.getElementById("importBill").onclick = () => {
+  document.getElementById("importFile").click();
+};
+
+document.getElementById("importFile").onchange = (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+
+  reader.onload = () => {
+    const preview = document.getElementById("importPreview");
+
+    preview.innerHTML = `
+      <img src="${reader.result}" class="imported-bill">
+    `;
+
+    window.isPaid = true;
+
+    applyPaidStampTo(preview);
+
+    document.getElementById("importModal").style.display = "block";
+  };
+
+  reader.readAsDataURL(file);
+};
+
+/* 🔍 PARSE ITEMS */
 function parse(text) {
   const lines = text.split("\n");
   let items = [];
@@ -39,6 +122,7 @@ function parse(text) {
   return items;
 }
 
+/* 🧾 GENERATE BILL */
 function generate() {
   const dateInput = document.getElementById("date").value;
   const formattedDate = dateInput
@@ -52,15 +136,8 @@ function generate() {
 
   let total = 0;
 
-  // 🔥 PNG STAMP
-  let paidStamp = "";
-  if (window.isPaid) {
-    paidStamp = `<img src="paid.png" class="paid-stamp">`;
-  }
-
   let html = `
     <div class="bill-container">
-      ${paidStamp}
 
       <div class="logo">
         <img src="./logo.png">
@@ -101,14 +178,58 @@ function generate() {
           Please keep this bill. For any issues, contact within 7 days.
         </p>
       </div>
+
     </div>
   `;
 
   document.getElementById("bill").innerHTML = html;
   window.currentTotal = total;
+
+  applyPaidStampTo(document.querySelector(".bill-container"));
 }
 
-/* 🔥 UPI QR */
+document.getElementById("simpleQrBtn").onclick = () => {
+  generateSimpleQR();
+  document.getElementById("qrModal").style.display = "block";
+};
+
+document.getElementById("qrAmount").textContent = "Enter amount after scanning";
+
+function generateSimpleQR() {
+  const upiId = "shark.sk1154@oksbi";
+  const name = "Shobha Boutique";
+
+  const upiLink = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(name)}&cu=INR`;
+
+  const qrContainer = document.getElementById("qrcode");
+  qrContainer.innerHTML = "";
+
+  new QRCode(qrContainer, {
+    text: upiLink,
+    width: 200,
+    height: 200
+  });
+
+  // clear amount text
+  document.getElementById("qrAmount").textContent = "";
+}
+
+/* 🖼 APPLY PAID STAMP */
+function applyPaidStampTo(container) {
+  if (!container) return;
+
+  const old = container.querySelector(".paid-stamp");
+  if (old) old.remove();
+
+  if (window.isPaid) {
+    const img = document.createElement("img");
+    img.src = "paid.png";
+    img.className = "paid-stamp";
+    container.appendChild(img);
+  }
+}
+
+/* 💳 GENERATE UPI QR */
 function generateUPIQR() {
   const total = window.currentTotal || 0;
   if (!total) return false;
@@ -145,7 +266,7 @@ function generateUPIQR() {
   return true;
 }
 
-/* 🔥 DOWNLOAD */
+/* 📥 DOWNLOAD */
 async function download() {
   const bill = document.getElementById("bill");
 
@@ -160,7 +281,7 @@ async function download() {
   link.click();
 }
 
-/* 🔥 SHARE BILL */
+/* 📤 SHARE BILL */
 async function share() {
   const bill = document.getElementById("bill");
 
@@ -184,7 +305,7 @@ async function share() {
   }
 }
 
-/* 🔥 SHARE QR */
+/* 📤 SHARE QR */
 async function shareupi() {
   const ok = generateUPIQR();
   if (!ok) return alert("Add items first");
@@ -211,7 +332,7 @@ async function shareupi() {
   }
 }
 
-/* 🔥 SHARE BOTH */
+/* 📤 SHARE BOTH */
 async function shareBoth() {
   const ok = generateUPIQR();
   if (!ok) return alert("Add items first");
