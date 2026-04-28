@@ -261,3 +261,29 @@ hr {
   opacity: 0.2;
   pointer-events: none;
 }
+
+
+.bill-container {
+  position: relative;
+}
+
+/* imported bill image */
+.imported-bill {
+  width: 100%;
+  border-radius: 12px;
+  display: block;
+}
+
+/* PAID stamp */
+.paid-stamp {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-20deg);
+
+  width: 40%;          /* 🔥 key change */
+  max-width: 180px;    /* limit for big screens */
+  
+  opacity: 0.25;
+  pointer-events: none;
+}
